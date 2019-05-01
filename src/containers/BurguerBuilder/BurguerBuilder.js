@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import Aux from '../../hoc/Aux';
+import AuxWrapper from '../../hoc/AuxWrapper';
 import Burguer from '../../components/Burguer/Burguer';
 import BuildControls from '../../components/Burguer/BuildControls/BuildControls';
 
@@ -70,13 +70,13 @@ class BurguerBuilder extends Component {
     // for another Div to wrap them
     render() {
        return( 
-        <Aux>
+        <AuxWrapper>
             <Burguer ingredients={this.state.ingredients}/>
             <BuildControls 
                 ingredientAdded={this.addIngredientHandler} 
                 ingredientRemoved={this.removeIngredientHandler}
             />
-        </Aux>
+        </AuxWrapper>
        );
     }
 
