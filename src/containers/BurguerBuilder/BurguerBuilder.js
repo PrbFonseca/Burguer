@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import AuxWrapper from '../../hoc/AuxWrapper';
 import Burguer from '../../components/Burguer/Burguer';
 import BuildControls from '../../components/Burguer/BuildControls/BuildControls';
+import Modal from '../../components/UI/Modal/Modal';
+import OrderSummary from '../../components/Burguer/OrderSummary/OrderSummary'
 
 // Define a constant with the ingredient prices
 const INGREDIENT_PRICES = {
@@ -20,7 +22,21 @@ class BurguerBuilder extends Component {
             cheese:0,
             meat:0
         },
-        totalPrice: 4
+        totalPrice: 4,
+        purchaseable: false
+    }
+
+    updatePurchaseState (ingredients) {
+
+        const sum = Object.keys(ingredients)
+            .map(igKey => {
+                return ingredients[igKey]
+            })
+            .reduce((sum, el) => {
+                return sum + el
+            },0);
+
+        this.setState({purchaseable: sum > 0});
     }
 
     addIngredientHandler = (type) => {
@@ -40,6 +56,8 @@ class BurguerBuilder extends Component {
 
         // Update the state 
         this.setState({totalPrice: newPrice, ingredients:updatedIngredients});
+
+        this.updatePurchaseState(updatedIngredients);
     }
 
     removeIngredientHandler = (type) => {
@@ -61,6 +79,7 @@ class BurguerBuilder extends Component {
     
             // Update the state 
             this.setState({totalPrice: newPrice, ingredients:updatedIngredients});
+            this.updatePurchaseState(updatedIngredients);
         } 
 
 
@@ -69,15 +88,33 @@ class BurguerBuilder extends Component {
     // We'll use our default Aux component because we want to return adjacent JSX elements and we have no need
     // for another Div to wrap them
     render() {
-       return( 
-        <AuxWrapper>
-            <Burguer ingredients={this.state.ingredients}/>
-            <BuildControls 
-                ingredientAdded={this.addIngredientHandler} 
-                ingredientRemoved={this.removeIngredientHandler}
-            />
-        </AuxWrapper>
-       );
+        
+        // Check which 'remove' buttons can be visible
+        const disabledInfo = {
+            ...this.state.ingredients
+        };
+
+        // If will set the state of the copied object to true or false
+        // depending on the number of ingredients
+        for (let key in disabledInfo) {
+            disabledInfo[key] = disabledInfo[key] <= 0
+        }
+
+        return( 
+            <AuxWrapper>
+                <Modal>
+                    <OrderSummary ingredients={this.state.ingredients}/>
+                </Modal>
+                <Burguer ingredients={this.state.ingredients}/>
+                <BuildControls 
+                    ingredientAdded={this.addIngredientHandler} 
+                    ingredientRemoved={this.removeIngredientHandler}
+                    disabled = {disabledInfo}
+                    purchaseable={this.state.purchaseable}
+                    price={this.state.totalPrice}
+                />
+            </AuxWrapper>
+        );
     }
 
 
