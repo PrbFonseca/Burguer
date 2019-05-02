@@ -94,6 +94,11 @@ class BurguerBuilder extends Component {
         this.setState({purchasing: false})
     }
 
+    purchaseContinueHandler = () => {
+        alert('You continue!');
+    }
+
+
     // We'll use our default Aux component because we want to return adjacent JSX elements and we have no need
     // for another Div to wrap them
     render() {
@@ -112,7 +117,11 @@ class BurguerBuilder extends Component {
         return( 
             <AuxWrapper>
                 <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
-                    <OrderSummary ingredients={this.state.ingredients}/>
+                    <OrderSummary 
+                        ingredients={this.state.ingredients}
+                        price={this.state.totalPrice}
+                        purchaseCanceled={this.purchaseCancelHandler}
+                        purchaseContinue={this.purchaseContinueHandler}/>
                 </Modal>
                 <Burguer ingredients={this.state.ingredients}/>
                 <BuildControls 
