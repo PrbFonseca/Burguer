@@ -18,6 +18,7 @@ class Layout extends Component {
     }
 
     sideDrawerToggleHandler = () => {
+        // set state is an asynchronous process. We use previous state to make sure it looks at te proper info
         this.setState((prevState) => {
            return  this.setState({showSideDrawer: !prevState.showSideDrawer});
         });

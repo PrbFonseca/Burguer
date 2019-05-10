@@ -3,7 +3,9 @@ import AuxWrapper from '../../hoc/AuxWrapper';
 import Burguer from '../../components/Burguer/Burguer';
 import BuildControls from '../../components/Burguer/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
-import OrderSummary from '../../components/Burguer/OrderSummary/OrderSummary'
+import OrderSummary from '../../components/Burguer/OrderSummary/OrderSummary';
+import axios from '../../axios-orders';
+import Spinner from '../../components/UI/Spinner/Spinner';
 
 // Define a constant with the ingredient prices
 const INGREDIENT_PRICES = {
@@ -24,7 +26,8 @@ class BurguerBuilder extends Component {
         },
         totalPrice: 4,
         purchaseable: false,
-        purchasing: false
+        purchasing: false,
+        loading: false
     }
 
     updatePurchaseState (ingredients) {
@@ -95,7 +98,34 @@ class BurguerBuilder extends Component {
     }
 
     purchaseContinueHandler = () => {
-        alert('You continue!');
+       // alert('You continue!');
+
+       this.setState({loading: true});
+
+       const order = {
+           ingredients: this.state.ingredients,
+           price: this.state.totalPrice,
+           customer: {
+               name:'Paulo Fonseca',
+               address:{
+                   street: 'Rua das Caldas',
+                   zipCode:'4300',
+                   country:'Portugal'
+               },
+               email: 'test@test.com'
+           },
+           deliveryMethod: 'fastest'
+       }
+        
+       // firebase wil create the db structure. It requires .json 
+        axios.post('/orders.json',order)
+            .then(response => {
+                this.setState({loading: false, purchasing:false });
+            })
+            .catch(error => {
+                this.setState({loading: false, purchasing:false});
+            });
+
     }
 
 
@@ -114,14 +144,22 @@ class BurguerBuilder extends Component {
             disabledInfo[key] = disabledInfo[key] <= 0
         }
 
+        // Order summary vs Loader
+        let orderSummary= <OrderSummary 
+            ingredients={this.state.ingredients}
+            price={this.state.totalPrice}
+            purchaseCanceled={this.purchaseCancelHandler}
+            purchaseContinue={this.purchaseContinueHandler}/>;
+
+        if (this.state.loading) {
+            orderSummary=<Spinner/ >
+        }
+        // End of order summary vs loader
+
         return( 
             <AuxWrapper>
                 <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
-                    <OrderSummary 
-                        ingredients={this.state.ingredients}
-                        price={this.state.totalPrice}
-                        purchaseCanceled={this.purchaseCancelHandler}
-                        purchaseContinue={this.purchaseContinueHandler}/>
+                   {orderSummary}
                 </Modal>
                 <Burguer ingredients={this.state.ingredients}/>
                 <BuildControls 
