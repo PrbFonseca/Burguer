@@ -1,8 +1,7 @@
 .Burguer{
-    width:100;
+    width: 200px;
     margin:auto;
     height:250px;
-    overflow:scroll;
     text-align: center;
     font-weight: bold;
     font-size: 1.2rem;
@@ -10,14 +9,14 @@
 
 @media (min-width:1000px) and (min-height:700px) {
     .Burguer{
-        widows: 450px;
+        width: 450px;
         height:400px;
     }
 }
 
 @media (min-width:500px) and (min-height:400px) {
     .Burguer{
-        widows: 350px;
+        width: 350px;
         height: 300px;
     }
 }
