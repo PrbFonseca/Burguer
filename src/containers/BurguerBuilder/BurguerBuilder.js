@@ -10,13 +10,6 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import { connect } from 'react-redux';
 import * as actionTypes from '../../store/actions';
 
-// Define a constant with the ingredient prices
-const INGREDIENT_PRICES = {
-    salad: 0.5,
-    cheese: 0.4,
-    meat: 1.3,
-    bacon: 0.7
-}
 
 class BurguerBuilder extends Component {
 
@@ -38,7 +31,7 @@ class BurguerBuilder extends Component {
 
     state = {
  //       ingredients: null,
-        totalPrice: 4,
+ //       totalPrice: 4,
         purchaseable: false,
         purchasing: false,
         loading: false,
@@ -185,14 +178,14 @@ class BurguerBuilder extends Component {
                         disabled = {disabledInfo}
                         purchaseable={this.state.purchaseable}
                         ordered={this.purchaseHandler}
-                        price={this.state.totalPrice}
+                        price={this.props.storePrice}
                     />
                 </AuxWrapper>
                 );
 
              orderSummary= <OrderSummary 
                 ingredients={this.props.storeIngredients}
-                price={this.state.totalPrice}
+                price={this.props.storePrice}
                 purchaseCanceled={this.purchaseCancelHandler}
                 purchaseContinue={this.purchaseContinueHandler}/>;
         }
@@ -217,10 +210,11 @@ class BurguerBuilder extends Component {
 }
 
  // maps a state from the store into a received prop. 
- // So we can access all ingredients from the store in this component as 'this.props.ings'
+ // So we can access all ingredients from the store in this component as 'this.props.storeIngredients'
 const mapStateToProps = state => {
     return {
-        storeIngredients: state.ingredients   
+        storeIngredients: state.ingredients,
+        storePrice: state.totalPrice   
     };
 }
 
